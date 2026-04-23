@@ -7,24 +7,52 @@ url = os.getenv("SUPABASE_URL")
 key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 supabase: Client = create_client(url, key)
+import psycopg2
 
-def log_plate_to_supabase(plate, event_type, camera_location, confidence, image_url=None):
-    try:
-        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
-        data = {
-            "plate": plate,
-            "timestamp": now,
-            "event_type": event_type,
-            "camera_location": camera_location,
-            "confidence": confidence,
-            "image_url": image_url
+# Replace with your actual Supabase DB credentials
+host = "db.your-project-id.supabase.co"
+database = "postgres"
+user = "postgres"
+password = "your-database-password"
+port = "5432"
+
+try:
+    # Connect to Supabase (PostgreSQL)
+    conn = psycopg2.connect(
+        host=host,
+        database=database,
+        user=user,
+        password=password,
+        port=port
+    )
+
+    print("Connected to Supabase!")
+
+    # Create cursor (like Statement in Java)
+    cur = conn.cursor()
+
+    # Execute query
+    cur.execute("SELECT * FROM your_table_name")
+
+    # Fetch results
+    rows = cur.fetchall()
+
+    for row in rows:
+        print(row)
+
+    # Close connection
+    cur.close()
+    conn.close()
+
+except Exception as e:
+    print("Error:", e)
+            while (rs.next()) {
+                System.out.println(rs.getString(1));
+            }
+
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        res = supabase.table("plate_logs").insert(data).execute()
-
-        if res.data:
-            print("✅ Inserted:", res.data)
-        else:
-            print("⚠️ No data returned. Response:", res)
-    except Exception as e:
-        print("❌ Error inserting:", e)
+    }
+}
